@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <p>heyyyyy</p>
+        <div>
+            <p id="p1">this is line</p>
+            <p id="p2">this is another line</p>
+        </div>
+        <script>
+            const para=document.createElement("p")
+            const node = document.createTextNode("This is new.");
+            para.appendChild(node);
+            
+            const element = document.getElementById("div1");
+            const child = document.getElementById("p1");
+            element.insertBefore(para,child);
+        </script>
+    </body>
+</html>

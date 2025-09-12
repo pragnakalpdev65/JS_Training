@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <h2>helloooo</h2>
+        <p>new element</p>
+        <div id="div1">
+            <p id="p1">this is line</p>
+            <p id="p2">this is another line</p>
+        </div>
+        <script>
+            const para=document.createElement("p");
+            const node=document.createTextNode("new new new");
+            para.appendChild(node);
+            const element=document.getElementById("div1");
+            element.appendChild(para)
+        </script>
+    </body>
+</html>
