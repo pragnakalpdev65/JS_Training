@@ -1,0 +1,276 @@
+<!--Task: Create a fully functional Task Management Application using HTML, CSS, and JavaScript.
+
+1. Task CRUD Operations :
+    - Add new tasks with validation
+    - Delete tasks with confirmation
+    - Mark tasks as complete/incomplete 
+
+
+    - Edit existing tasks inline
+
+2.Data Management :
+    - Generate unique task IDs automatically
+    
+    - Store tasks in browser's localStorage
+    - Implement data persistence across sessions
+    - Handle data validation and error checking
+    
+
+3. Advanced Filtering System :
+    - Filter by status (All, Pending, Completed)
+    - Filter by priority (High, Medium, Low)
+
+4. User Interface Features :
+    - Real-time statistics display
+    - Interactive buttons and controls
+    - Custom notification system
+    - Dark/light mode toggle  
+
+    - Responsive design for mobile/desktop
+-->
+
+
+<!--Task: Create a fully functional Task Management Application using HTML, CSS, and JavaScript.
+
+1. Task CRUD Operations :
+    - Add new tasks with validation
+    - Delete tasks with confirmation
+    - Mark tasks as complete/incomplete 
+
+
+    - Edit existing tasks inline
+
+2.Data Management :
+    - Generate unique task IDs automatically
+    
+    - Store tasks in browser's localStorage
+    - Implement data persistence across sessions
+    - Handle data validation and error checking
+    
+
+3. Advanced Filtering System :
+    - Filter by status (All, Pending, Completed)
+    - Filter by priority (High, Medium, Low)
+
+4. User Interface Features :
+    - Real-time statistics display
+    - Interactive buttons and controls
+    - Custom notification system
+    - Dark/light mode toggle  
+
+    - Responsive design for mobile/desktop
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>To-Do List</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="container">
+    <button id="theme" onclick="myfunction()">
+      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M480-360q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35Zm0 80q-83 0-141.5-58.5T280-480q0-83 58.5-141.5T480-680q83 0 141.5 58.5T680-480q0 83-58.5 141.5T480-280ZM200-440H40v-80h160v80Zm720 0H760v-80h160v80ZM440-760v-160h80v160h-80Zm0 720v-160h80v160h-80ZM256-650l-101-97 57-59 96 100-52 56Zm492 496-97-101 53-55 101 97-57 59Zm-98-550 97-101 59 57-100 96-56-52ZM154-212l101-97 55 53-97 101-59-57Zm326-268Z"/></svg>
+    </button>
+    <h2 style="text-decoration: underline;">TO-DO List</h2>
+    <p>One Step At A Time..!</p>
+    <input type="text" id="task" placeholder="Enter task here.."><br>
+    
+   
+    <label for="prio">Priority:</label>
+    <select id="prio">
+        <option value="high">High</option>
+        <option value="medium">Medium</option>
+        <option value="low">Low</option>    
+    </select>
+
+    <button id="addbtn">Add</button>
+    <ul id="task_list"></ul>
+    <ul id="complete_task_list"></ul>
+ <div class="button-group">
+    <label for="status">Status:</label>
+    <select id="status">
+        <option value="All">All</option>
+        <option value="Completed">Completed</option>
+        <option value="Pending">Pending</option>
+    </select>
+   
+    <label for="priority">Priority:</label>
+    <select id="priority">
+        <option value="All">All</option>
+        <option value="high">High</option>
+        <option value="medium">Medium</option>
+        <option value="low">Low</option>
+    </select>
+
+ </div>
+    
+    <h2 style="padding-left: 0px;">Filtered Tasks:</h2>
+    <ul id="all"></ul>
+  </div>
+
+  <script>
+    const input = document.getElementById("task");
+    const pri = document.getElementById("prio");
+    const taskList = document.getElementById("task_list");
+    const addBtn = document.getElementById("addbtn");
+    const stts = document.getElementById("status");
+    const priorty = document.getElementById("priority");
+    const complete_task = document.getElementById("complete_task_list");
+    const filterList = document.getElementById("all");
+    let listItemCounter = 0;
+
+    let tasks =[];
+    SavedTasks();
+
+    addBtn.addEventListener("click", addTask);
+    input.addEventListener("keypress", function(event) {
+      if (event.key === "Enter") addBtn.click();
+    });
+
+    function addTask() {
+      let task = input.value.trim();
+
+      if (task !== "") {
+        if (confirm("Confirm to add a task?")) {
+          let listItem = createTaskElement(task, pri.value, listItemCounter);
+          taskList.appendChild(listItem);
+
+          tasks.push({
+            id: listItemCounter,
+            text: task,
+            priority: pri.value,
+            completed: false
+          });
+          localStorage.setItem("tasks", JSON.stringify(tasks));
+
+          listItemCounter++;
+          input.value = "";
+          filterTasks();
+        }
+      } else {
+        alert("Enter task..!");
+      }
+    }
+
+    function createTaskElement(taskText, priority, id, completed=false) {
+      let listItem = document.createElement("li");
+      listItem.id = id;
+
+      let chkbox = document.createElement("input");
+      chkbox.type = "checkbox";
+      chkbox.checked = completed;
+
+      let taskSpan = document.createElement("span");
+      taskSpan.textContent = taskText;
+
+      if (completed) {
+        taskSpan.style.textDecoration = "line-through";
+        taskSpan.style.color = "gray";
+        complete_task.appendChild(listItem);
+      }
+
+      chkbox.addEventListener("change", function() {
+        updateTaskStatus(listItem.id, chkbox.checked);
+        if (chkbox.checked) {
+          taskSpan.style.textDecoration = "line-through";
+          taskSpan.style.color = "gray";
+          complete_task.appendChild(listItem);
+        } else {
+          taskSpan.style.textDecoration = "none";
+          taskSpan.style.color = "black";
+          taskList.appendChild(listItem);
+        }
+        filterTasks();
+      });
+
+      let delBtn = document.createElement("button");
+      delBtn.textContent = "x"; 
+      delBtn.addEventListener("click", function() {
+        if (confirm("Do you want to delete this task?")) {
+          listItem.remove();
+          tasks = tasks.filter(t => t.id != listItem.id);
+          localStorage.setItem("tasks", JSON.stringify(tasks));
+          filterTasks();
+        }
+      });
+
+      taskSpan.addEventListener("dblclick", function() {
+        let editInput = document.createElement("input");
+        editInput.type = "text";
+        editInput.value = taskSpan.textContent;
+        listItem.replaceChild(editInput, taskSpan);
+
+        editInput.addEventListener("keypress", function(event) {
+          if (event.key == "Enter") {
+            taskSpan.textContent = editInput.value;
+            listItem.replaceChild(taskSpan, editInput);
+
+            let t = tasks.find(t => t.id == listItem.id);
+            if (t) {
+              t.text = editInput.value;
+              localStorage.setItem("tasks", JSON.stringify(tasks));
+            }
+            filterTasks();
+          }
+        });
+      });
+
+      listItem.append(chkbox, taskSpan, delBtn);
+      return listItem;
+    }
+
+    function updateTaskStatus(id, completed) {
+      let t = tasks.find(t => t.id == id);
+      if (t) {
+        t.completed = completed;
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+      }
+    }
+    
+    function filterTasks() {
+      filterList.innerHTML = "";
+      let statusVal = stts.value;
+      let priorityVal = priorty.value;
+
+      tasks.forEach(task => {
+        let matchStatus = statusVal == "All" || (statusVal == "Completed" && task.completed) || (statusVal === "Pending" && !task.completed);
+
+        let matchPriority = priorityVal == "All" || task.priority == priorityVal;
+
+        if (matchStatus && matchPriority) {
+          let li = document.createElement("li");
+          li.textContent = task.text + " (" + task.priority + ")";
+          filterList.appendChild(li);
+        }
+      });
+    }
+
+    function SavedTasks() {
+      tasks.forEach(task => {
+        let listItem = createTaskElement(task.text, task.priority, task.id, task.completed);
+        if (task.completed) {
+          complete_task.appendChild(listItem);
+        } else {
+          taskList.appendChild(listItem);
+        }
+        listItemCounter = Math.max(listItemCounter, task.id + 1);
+      });
+      filterTasks();
+    }
+
+  
+    stts.addEventListener("change", filterTasks);
+    priorty.addEventListener("change", filterTasks);
+
+    function myfunction() {
+      document.body.classList.toggle("dark-mode");
+    }
+  </script>
+</body>
+</html>
+
+
+
+
