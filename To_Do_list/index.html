@@ -2,19 +2,15 @@
 
 1. Task CRUD Operations :
     - Add new tasks with validation
-    - Delete tasks with confirmation
-    - Mark tasks as complete/incomplete 
-
-
     - Edit existing tasks inline
+    - Delete tasks with confirmation
+    - Mark tasks as complete/incomplete
 
 2.Data Management :
-    - Generate unique task IDs automatically
-    
     - Store tasks in browser's localStorage
     - Implement data persistence across sessions
     - Handle data validation and error checking
-    
+    - Generate unique task IDs automatically
 
 3. Advanced Filtering System :
     - Filter by status (All, Pending, Completed)
@@ -22,45 +18,12 @@
 
 4. User Interface Features :
     - Real-time statistics display
+    - Dark/light mode toggle  
     - Interactive buttons and controls
     - Custom notification system
-    - Dark/light mode toggle  
-
     - Responsive design for mobile/desktop
 -->
-
-
-<!--Task: Create a fully functional Task Management Application using HTML, CSS, and JavaScript.
-
-1. Task CRUD Operations :
-    - Add new tasks with validation
-    - Delete tasks with confirmation
-    - Mark tasks as complete/incomplete 
-
-
-    - Edit existing tasks inline
-
-2.Data Management :
-    - Generate unique task IDs automatically
-    
-    - Store tasks in browser's localStorage
-    - Implement data persistence across sessions
-    - Handle data validation and error checking
-    
-
-3. Advanced Filtering System :
-    - Filter by status (All, Pending, Completed)
-    - Filter by priority (High, Medium, Low)
-
-4. User Interface Features :
-    - Real-time statistics display
-    - Interactive buttons and controls
-    - Custom notification system
-    - Dark/light mode toggle  
-
-    - Responsive design for mobile/desktop
--->
-
+ 
 <!DOCTYPE html>
 <html>
 <head>
@@ -125,15 +88,18 @@
     SavedTasks();
 
     addBtn.addEventListener("click", addTask);
-    input.addEventListener("keypress", function(event) {
+    input.addEventListener("keypress", function(event)
+    {
       if (event.key === "Enter") addBtn.click();
     });
 
     function addTask() {
       let task = input.value.trim();
 
-      if (task !== "") {
-        if (confirm("Confirm to add a task?")) {
+      if (task !== "") 
+      {
+        if (confirm("Confirm to add a task?")) 
+        {
           let listItem = createTaskElement(task, pri.value, listItemCounter);
           taskList.appendChild(listItem);
 
@@ -149,12 +115,15 @@
           input.value = "";
           filterTasks();
         }
-      } else {
+      } 
+      else 
+      {
         alert("Enter task..!");
       }
     }
 
-    function createTaskElement(taskText, priority, id, completed=false) {
+    function createTaskElement(taskText, priority, id, completed=false) 
+    {
       let listItem = document.createElement("li");
       listItem.id = id;
 
@@ -165,19 +134,24 @@
       let taskSpan = document.createElement("span");
       taskSpan.textContent = taskText;
 
-      if (completed) {
+      if (completed) 
+      {
         taskSpan.style.textDecoration = "line-through";
         taskSpan.style.color = "gray";
         complete_task.appendChild(listItem);
       }
 
-      chkbox.addEventListener("change", function() {
+      chkbox.addEventListener("change", function() 
+      {
         updateTaskStatus(listItem.id, chkbox.checked);
-        if (chkbox.checked) {
+        if (chkbox.checked) 
+        {
           taskSpan.style.textDecoration = "line-through";
           taskSpan.style.color = "gray";
           complete_task.appendChild(listItem);
-        } else {
+        } 
+        else 
+        {
           taskSpan.style.textDecoration = "none";
           taskSpan.style.color = "black";
           taskList.appendChild(listItem);
@@ -188,7 +162,8 @@
       let delBtn = document.createElement("button");
       delBtn.textContent = "x"; 
       delBtn.addEventListener("click", function() {
-        if (confirm("Do you want to delete this task?")) {
+        if (confirm("Do you want to delete this task?")) 
+        {
           listItem.remove();
           tasks = tasks.filter(t => t.id != listItem.id);
           localStorage.setItem("tasks", JSON.stringify(tasks));
@@ -202,13 +177,16 @@
         editInput.value = taskSpan.textContent;
         listItem.replaceChild(editInput, taskSpan);
 
-        editInput.addEventListener("keypress", function(event) {
-          if (event.key == "Enter") {
+        editInput.addEventListener("keypress", function(event) 
+        {
+          if (event.key == "Enter")
+          {
             taskSpan.textContent = editInput.value;
             listItem.replaceChild(taskSpan, editInput);
 
             let t = tasks.find(t => t.id == listItem.id);
-            if (t) {
+            if (t)
+            {
               t.text = editInput.value;
               localStorage.setItem("tasks", JSON.stringify(tasks));
             }
@@ -221,15 +199,18 @@
       return listItem;
     }
 
-    function updateTaskStatus(id, completed) {
+    function updateTaskStatus(id, completed) 
+    {
       let t = tasks.find(t => t.id == id);
-      if (t) {
+      if (t) 
+      {
         t.completed = completed;
         localStorage.setItem("tasks", JSON.stringify(tasks));
       }
     }
     
-    function filterTasks() {
+    function filterTasks() 
+    {
       filterList.innerHTML = "";
       let statusVal = stts.value;
       let priorityVal = priorty.value;
@@ -239,7 +220,8 @@
 
         let matchPriority = priorityVal == "All" || task.priority == priorityVal;
 
-        if (matchStatus && matchPriority) {
+        if (matchStatus && matchPriority) 
+        {
           let li = document.createElement("li");
           li.textContent = task.text + " (" + task.priority + ")";
           filterList.appendChild(li);
@@ -247,12 +229,15 @@
       });
     }
 
-    function SavedTasks() {
+    function SavedTasks() 
+    {
       tasks.forEach(task => {
         let listItem = createTaskElement(task.text, task.priority, task.id, task.completed);
-        if (task.completed) {
+        if (task.completed) 
+        {
           complete_task.appendChild(listItem);
-        } else {
+        } else 
+        {
           taskList.appendChild(listItem);
         }
         listItemCounter = Math.max(listItemCounter, task.id + 1);
@@ -264,7 +249,8 @@
     stts.addEventListener("change", filterTasks);
     priorty.addEventListener("change", filterTasks);
 
-    function myfunction() {
+    function myfunction() 
+    {
       document.body.classList.toggle("dark-mode");
     }
   </script>
