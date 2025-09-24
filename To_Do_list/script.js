@@ -168,7 +168,7 @@ function SavedTasks() {
         } else {
             taskList.appendChild(listItem);
         }
-        listItemCounter = Math.max(listItemCounter, task.id + 1);
+        
     });
     filterTasks();
 }
