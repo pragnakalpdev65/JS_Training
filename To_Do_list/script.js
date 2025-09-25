@@ -9,7 +9,7 @@ const complete_task = document.getElementById("complete_task_list");
 const filterList = document.getElementById("all");
 let listItemCounter = 0;
 
-let tasks = [];
+let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 SavedTasks();
 
 addBtn.addEventListener("click", addTask);
@@ -154,7 +154,7 @@ function filterTasks() {
         }
         else{
 
-            document.getElementById("nofound").innerHTML="There is no task that match your filter."
+            document.getElementById("nofound").innerHTML="There is no task that is match your filter."
             
         }
     });
@@ -177,9 +177,30 @@ function SavedTasks() {
 stts.addEventListener("change", filterTasks);
 priorty.addEventListener("change", filterTasks);
 
-function myfunction() {
-    document.body.classList.toggle("dark-mode");
+//theme.addEventListener("click",myfunction);
+
+const theme = document.getElementById("theme");
+const body = document.body;
+
+theme.addEventListener("click", function () {
+    body.classList.toggle("dark-mode");
+
+    if (body.classList.contains("dark-mode")) {
+        localStorage.setItem("theme", "dark");
+    } else {
+        localStorage.setItem("theme", "light");
+    }
+});
+
+function applyTheme() {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") {
+        body.classList.add("dark-mode");
+    } else {
+        body.classList.remove("dark-mode");
+    }
 }
+applyTheme();
 
 
 
